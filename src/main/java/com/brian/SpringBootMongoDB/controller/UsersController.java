@@ -2,7 +2,6 @@ package com.brian.SpringBootMongoDB.controller;
 
 import com.brian.SpringBootMongoDB.document.Users;
 import com.brian.SpringBootMongoDB.repository.UsersRepository;
-import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -77,13 +76,23 @@ public class UsersController {
     }
 
     @PutMapping("/update/{id}")
-    public User updateUser(@RequestBody Users users, @PathVariable Integer id) {
+    public Users updateUser(@RequestBody Users users, @PathVariable Integer id) {
 
         System.out.println("updating user: " + users.toString());
 
         UsersRepository.updateUser(users, id);
 
         return null;
+    }
+
+    @PutMapping("/findandmodify/{id}")
+    public Users findAndModify(@RequestBody Users users, @PathVariable Integer id) {
+
+        System.out.println("find and modify user: " + users.toString());
+
+        Users fromService = UsersRepository.findOneAndModify(users, id);
+
+        return fromService;
     }
 
 
