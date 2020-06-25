@@ -2,6 +2,7 @@ package com.brian.SpringBootMongoDB.controller;
 
 import com.brian.SpringBootMongoDB.document.Users;
 import com.brian.SpringBootMongoDB.repository.UsersRepository;
+import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -16,13 +17,13 @@ import java.util.Optional;
 public class UsersController {
 
     @Autowired
-    private UsersRepository usersRepository;
+    private UsersRepository UsersRepository;
 
     @GetMapping("/all")
     @ResponseStatus(HttpStatus.OK)
     public List<Users> getAllUsers() {
         System.out.println("get all users");
-        List<Users> users = usersRepository.findAll();
+        List<Users> users = UsersRepository.findAll();
         for (Users each : users) {
             System.out.println(each.toString());
         }
@@ -33,7 +34,7 @@ public class UsersController {
     @ResponseStatus(HttpStatus.OK)
     public Optional<Users> getUserById(@PathVariable Integer id) {
         System.out.println("get user by ID: " + id);
-        Optional<Users> user = usersRepository.findById(id);
+        Optional<Users> user = UsersRepository.findById(id);
 
         if (user.isPresent()) {
             System.out.println(user.toString());
@@ -50,7 +51,7 @@ public class UsersController {
         if (null != users) {
             System.out.println("adding a new user");
             System.out.println(users.toString());
-            usersRepository.insert(users);
+            UsersRepository.insert(users);
             return "new user was added";
         }
 
@@ -61,18 +62,28 @@ public class UsersController {
     @DeleteMapping("/delete/{id}")
     public String deleteUser(@PathVariable Integer id) {
 
-        Optional<Users> user = usersRepository.findById(id);
+        Optional<Users> user = UsersRepository.findById(id);
         Users deletedUser;
 
         if (user.isPresent()) {
             deletedUser = user.get();
             System.out.println(deletedUser.toString());
-            usersRepository.deleteById(id);
+            UsersRepository.deleteById(id);
 
             return "deleted user: " + deletedUser.toString();
         }
 
         return "user Id was not valid";
+    }
+
+    @PutMapping("/update/{id}")
+    public User updateUser(@RequestBody Users users, @PathVariable Integer id) {
+
+        System.out.println("updating user: " + users.toString());
+
+        UsersRepository.updateUser(users, id);
+
+        return null;
     }
 
 
